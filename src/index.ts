@@ -1,11 +1,15 @@
 import * as serverless from "serverless-http";
 import * as express from "express";
+import * as bodyParser from "body-parser";
 
 const app = express();
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
-  res.send('Hello World!')
+  console.log(req);
+  res.json({message : "test"})
 });
 
-const handler = serverless(app);
-export default handler;
+exports.handler = serverless(app);
+

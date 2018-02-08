@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@types/node": "^9.4.2",
+    "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "serverless-http": "^1.5.3",
     "typescript": "^2.7.1"

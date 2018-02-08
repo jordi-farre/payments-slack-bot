@@ -10,8 +10,9 @@ functions:
   app:
     handler: dist/index.handler
     events:
-      - http: ANY /
-      - http: 'ANY {proxy+}'
+      - http:
+          path: bot
+          method: post 
 
 package: 
   include: 
