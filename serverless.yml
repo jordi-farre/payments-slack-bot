@@ -1,0 +1,22 @@
+service: payments-slack-bot 
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: eu-west-1
+
+functions:
+  app:
+    handler: dist/index.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+
+package: 
+  include: 
+    - dist/**
+  exclude: 
+    - .git/**
+    - src/**
+    - test/**
