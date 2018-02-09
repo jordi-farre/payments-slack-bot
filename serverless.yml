@@ -10,9 +10,7 @@ functions:
   app:
     handler: dist/index.handler
     events:
-      - http:
-          path: bot
-          method: post 
+      - http: 'POST /'
 
 package: 
   include: 
