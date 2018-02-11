@@ -11,4 +11,5 @@ app.post('/', function (req, res) {
 });
 
 exports.handler = serverless(app);
+exports.app = app;
 
