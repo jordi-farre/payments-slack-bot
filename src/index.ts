@@ -6,9 +6,12 @@ import { BotController } from "./BotController"
 const app = express();
 app.use(bodyParser.json({ strict: false }));
 
-const botController = new BotController();
+const token = process.env.botToken;
+const botController = new BotController(token);
 
-app.post('/', botController.process);
+app.post('/', (request, response) => {
+  botController.process(request, response);
+});
 
 exports.handler = serverless(app);
 exports.app = app;
