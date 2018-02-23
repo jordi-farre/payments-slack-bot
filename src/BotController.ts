@@ -17,13 +17,14 @@ export class BotController {
           const echoRegexp = /echo (.*)/i;
           const match = echoRegexp.exec(request.body.event.text);
 	  if (match) {
-            this.webClient.chat.postMessage(request.body.event.channel, match[1])
-	      .then((res) => {
-                 // `res` contains information about the posted message
-                 console.log('Message sent: ', res);
-		 response.status(200).send("OK");
-              })
-	      .catch(console.error);
+	    this.webClient.chat.postMessage(request.body.event.channel, match[1], (err, res) => {
+	      if (err) {
+	        console.error(err);
+                response.status(500).send(err);
+	      } else {
+		response.status(200).send("OK");
+	      }
+	    });
 	  }
       } else {
           response.status(200).send("OK");

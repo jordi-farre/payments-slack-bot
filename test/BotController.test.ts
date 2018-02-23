@@ -47,6 +47,8 @@ it('should send and echo message when app is mentioned with echo command', ()=> 
     	]
 	}}, response);
 
+  postMessageMock.mock.calls[0][2](null, "OK");
+
   expect(response.status).toHaveBeenCalledWith(200);
-  expect(postMessageMock).toHaveBeenCalledWith("C0LAN2Q64", "hello bot");
+  expect(postMessageMock).toHaveBeenCalledWith("C0LAN2Q64", "hello bot", expect.anything());
 }

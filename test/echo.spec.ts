@@ -5,8 +5,11 @@ import { app, webClient } from "../src/index.ts"
 import * as request from "supertest";
 
 it('should send and echo message when bot was mentioned', (done)=> {
-  const postMessageMock = jest.fn();
-  webClient.chat.postMessage = postMessageMock;
+  webClient.chat.postMessage = (channel, message, callback) => {
+    expect(channel).toBe("C0LAN2Q65");
+    expect(message).toBe("is it everything a river should be?");
+    callback(null, "OK");
+  };
   request(app)
     .post("/")
     .send({"token": "12345",
@@ -28,7 +31,6 @@ it('should send and echo message when bot was mentioned', (done)=> {
            ]
          })
     .then((response) => {
-      expect(postMessageMock).toHaveBeenCalledWith("C0LAN2Q65", "is it everything a river should be?");
       expect(response.statusCode).toBe(200);
       done();
      });
