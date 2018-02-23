@@ -6,7 +6,7 @@ import { BotController } from "./BotController"
 const app = express();
 app.use(bodyParser.json({ strict: false }));
 
-const token = process.env.botToken;
+const token = process.env.BOT_TOKEN;
 const botController = new BotController(token);
 
 app.post('/', (request, response) => {
