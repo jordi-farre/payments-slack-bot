@@ -5,6 +5,8 @@ provider:
   runtime: nodejs6.10
   stage: dev
   region: eu-west-1
+  environment:
+    BOT_TOKEN: ${file(./env-variables.yml):botToken}
 
 functions:
   app:
