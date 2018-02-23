@@ -17,9 +17,14 @@ export class BotController {
           const echoRegexp = /echo (.*)/i;
           const match = echoRegexp.exec(request.body.event.text);
 	  if (match) {
-            this.webClient.chat.postMessage(request.body.event.channel, match[1]);
+            this.webClient.chat.postMessage(request.body.event.channel, match[1])
+	      .then((res) => {
+                 // `res` contains information about the posted message
+                 console.log('Message sent: ', res);
+		 response.status(200).send("OK");
+              })
+	      .catch(console.error);
 	  }
-          response.status(200).send("OK");
       } else {
           response.status(200).send("OK");
       }
