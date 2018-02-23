@@ -1,4 +1,4 @@
-process.env.botToken = "12345";
+process.env.BOT_TOKEN = "12345";
 
 import { app } from "../src/index.ts"
 import * as request from "supertest";
