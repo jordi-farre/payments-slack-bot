@@ -1,14 +1,24 @@
 import { BotController } from "../src/BotController";
 const mockRes = require('jest-mock-express').response;
 import { WebClient } from "@slack/client";
+import { ChallengeCommand } from "../src/ChallengeCommand";
 
 it('should return the challenge received when the token is correct and the type is url_verification', ()=> {
-  const botController = new BotController("12345");
+  const challengeCommand = new ChallengeCommand();
+  challengeCommand.canHandle = jest.fn();
+  challengeCommand.canHandle.mockReturnValue(true);
+  challengeCommand.handle = jest.fn();
+  const botController = new BotController("12345", null, challengeCommand);
   const response = mockRes();
+  const event = {"token": "12345", "challenge": "challenge_to_be_returned", "type": "url_verification"};
 
   botController.process({"body": {"token": "12345", "challenge": "challenge_to_be_returned", "type": "url_verification"}}, response);
 
-  expect(response.json).toHaveBeenCalledWith({"challenge": "challenge_to_be_returned"});
+  challengeCommand.handle.mock.calls[0][1](null, {"challenge": "challenge_to_be_returned"});
+
+  expect(challengeCommand.canHandle).toHaveBeenCalledWith(event);
+  expect(challengeCommand.handle).toHaveBeenCalledWith(event, expect.anything());
+  expect(response.send).toHaveBeenCalledWith({"challenge": "challenge_to_be_returned"});
 }
 
 it("should return an authentication error when received token is incorrect", () => {
