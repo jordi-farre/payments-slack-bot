@@ -75,7 +75,7 @@ export class BotController {
   }
 
   getEventFrom(request: Request): Event {
-    return { "type": request.body.type, "token": request.body.token, "challenge": request.body.challenge };
+    return { "type": request.body.type, "challenge": request.body.challenge };
   }
 
 }

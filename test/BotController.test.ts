@@ -11,7 +11,7 @@ const response = mockRes();
 
 it('should return the challenge received when the token is correct and the type is url_verification', ()=> {
   challengeCommand.canHandle.mockReturnValue(true);
-  const event = {"token": "12345", "challenge": "challenge_to_be_returned", "type": "url_verification"};
+  const event = {"challenge": "challenge_to_be_returned", "type": "url_verification"};
 
   botController.process({"body": {"token": "12345", "challenge": "challenge_to_be_returned", "type": "url_verification"}}, response);
 
