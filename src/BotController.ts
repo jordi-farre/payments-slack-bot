@@ -1,15 +1,17 @@
+import { Request, Response } from "express";
+import { WebClient } from "@slack/client";
 
 export class BotController {
 
   botToken: string;
-  webClient;
+  webClient: WebClient;
 
-  constructor(botToken: string, webClient) {
+  constructor(botToken: string, webClient: WebClient) {
     this.botToken = botToken;
     this.webClient = webClient;
   }
 
-  process(request, response) {
+  process(request: Request, response: Response) {
     if (this.isValidTokenFor(request)) {
       if (this.isChallenge(request)) {
         this.handleChallenge(request, response);
@@ -23,23 +25,23 @@ export class BotController {
     }
   }
 
-  isValidTokenFor(request) {
+  isValidTokenFor(request: Request) {
     return this.botToken == request.body.token;
   }
 
-  isChallenge(request) {
+  isChallenge(request: Request) {
     return request.body.type == "url_verification";
   }
   
-  handleChallenge(request, response) {
+  handleChallenge(request: Request, response: Response) {
     response.json({"challenge": request.body.challenge});
   }
 
-  isAppMention(request) {
+  isAppMention(request: Request) {
     return request.body.type == "event_callback" && request.body.event.type == "app_mention";
   }
 
-  handleAppMention(request, response) {
+  handleAppMention(request: Request, response: Response) {
     const echoRegexp = /echo (.*)/i;
     const match = echoRegexp.exec(request.body.event.text);
     if (match) {
@@ -54,11 +56,11 @@ export class BotController {
     }
   }
 
-  handleUnknown(request, response) {
+  handleUnknown(request: Request, response: Response) {
     response.status(200).send("OK");
   }
 
-  handleUnauthorized(request, response) {
+  handleUnauthorized(request: Request, response: Response) {
     response.status(401).send("incorrect bot token");
   }
 
