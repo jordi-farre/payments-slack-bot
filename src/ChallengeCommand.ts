@@ -3,9 +3,9 @@ import { Request } from "./Request";
 export class ChallengeCommand {
 
   canHandle(request: Request): boolean {
-    throw new Error("Not implemented");
+    return request.type == "url_verification";
   }
 
   handle(request: Request, callback) {
-    throw new Error("Not implemented");
+    callback(null, { "challenge": request.challenge });
   }

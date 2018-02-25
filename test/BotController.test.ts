@@ -2,12 +2,12 @@ import { BotController } from "../src/BotController";
 const mockRes = require('jest-mock-express').response;
 import { WebClient } from "@slack/client";
 import { ChallengeCommand } from "../src/ChallengeCommand";
+const challengeCommand = new ChallengeCommand();
+challengeCommand.canHandle = jest.fn();
+challengeCommand.handle = jest.fn();
 
 it('should return the challenge received when the token is correct and the type is url_verification', ()=> {
-  const challengeCommand = new ChallengeCommand();
-  challengeCommand.canHandle = jest.fn();
   challengeCommand.canHandle.mockReturnValue(true);
-  challengeCommand.handle = jest.fn();
   const botController = new BotController("12345", null, challengeCommand);
   const response = mockRes();
   const event = {"token": "12345", "challenge": "challenge_to_be_returned", "type": "url_verification"};
@@ -34,7 +34,7 @@ it('should send and echo message when app is mentioned with echo command', ()=> 
   const webClient = new WebClient("123456");
   const postMessageMock = jest.fn();
   webClient.chat.postMessage = postMessageMock;
-  const botController = new BotController("12345", webClient);
+  const botController = new BotController("12345", webClient, challengeCommand);
   const response = mockRes();
 
   botController.process({"body":{
