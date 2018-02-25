@@ -4,9 +4,12 @@ import { WebClient } from "@slack/client";
 import { ChallengeCommand } from "../src/ChallengeCommand";
 jest.mock("../src/ChallengeCommand");
 const challengeCommand = new ChallengeCommand();
+import { EchoCommand } from "../src/EchoCommand"
+jest.mock("../src/EchoCommand");
+const echoCommand = new EchoCommand();
 const webClient = new WebClient("123456");
 webClient.chat.postMessage = jest.fn();
-const botController = new BotController("12345", webClient, challengeCommand);
+const botController = new BotController("12345", webClient, challengeCommand, echoCommand);
 const response = mockRes();
 
 it('should return the challenge received when the token is correct and the type is url_verification', ()=> {
@@ -29,6 +32,9 @@ it("should return an authentication error when received token is incorrect", () 
 }
 
 it('should send and echo message when app is mentioned with echo command', ()=> {
+  echoCommand.canHandle.mockReturnValue(true);
+  const event = {"type": "event_callback", "eventType": "app_mention", "text": "<@U0LAN0Z89> echo hello bot", "channel": "C0LAN2Q64" };
+
   botController.process({"body":{
     	"token": "12345",
     	"team_id": "T061EG9R6",
@@ -49,8 +55,9 @@ it('should send and echo message when app is mentioned with echo command', ()=> 
     	]
 	}}, response);
 
-  webClient.chat.postMessage.mock.calls[0][2](null, "OK");
+  echoCommand.handle.mock.calls[0][1](null, "OK");
 
   expect(response.status).toHaveBeenCalledWith(200);
-  expect(webClient.chat.postMessage).toHaveBeenCalledWith("C0LAN2Q64", "hello bot", expect.anything());
+  expect(echoCommand.canHandle).toHaveBeenCalledWith(event);
+  expect(echoCommand.handle).toHaveBeenCalledWith(event, expect.anything());
 }

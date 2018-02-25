@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { WebClient } from "@slack/client";
 import { ChallengeCommand } from "./ChallengeCommand";
+import { EchoCommand } from "./EchoCommand";
 import { Event } from "./Event";
 
 export class BotController {
@@ -8,11 +9,13 @@ export class BotController {
   botToken: string;
   webClient: WebClient;
   challengeCommand: ChallengeCommand;
+  echoCommand: EchoCommand;
 
-  constructor(botToken: string, webClient: WebClient, challengeCommand: ChallengeCommand) {
+  constructor(botToken: string, webClient: WebClient, challengeCommand: ChallengeCommand, echoCommand: EchoCommand) {
     this.botToken = botToken;
     this.webClient = webClient;
     this.challengeCommand = challengeCommand;
+    this.echoCommand = echoCommand;
   }
 
   process(request: Request, response: Response) {
@@ -52,15 +55,12 @@ export class BotController {
   }
 
   handleAppMention(request: Request, response: Response) {
-    const echoRegexp = /echo (.*)/i;
-    const match = echoRegexp.exec(request.body.event.text);
-    if (match) {
-      this.webClient.chat.postMessage(request.body.event.channel, match[1], (err, res) => {
+    if (this.echoCommand.canHandle(this.getEventFrom(request))) {
+      this.echoCommand.handle(this.getEventFrom(request), (err, res) => {
         if (err) {
-          console.error(err);
           response.status(500).send(err);
         } else {
-          response.status(200).send("OK");
+          response.status(200).send(res);
         }
       });
     }
@@ -75,7 +75,13 @@ export class BotController {
   }
 
   getEventFrom(request: Request): Event {
-    return { "type": request.body.type, "challenge": request.body.challenge };
+    var event =  { "type": request.body.type, "challenge": request.body.challenge };
+    if (request.body.event) {
+      event.eventType = request.body.event.type;
+      event.text = request.body.event.text;
+      event.channel = request.body.event.channel;
+    }
+    return event;
   }
 
 }
