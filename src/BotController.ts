@@ -18,10 +18,22 @@ export class BotController {
 
   process(request: Request, response: Response) {
     if (this.isValidTokenFor(request)) {
-      if (this.isChallenge(request)) {
-        this.handleChallenge(request, response);
-      } else if (this.isAppMention(request)) {
-        this.handleAppMention(request, response);
+      const event = this.getEventFrom(request);
+      if (this.challengeCommand.canHandle(event)) {
+        this.challengeCommand.handle(this.getEventFrom(request), (err, res) => {
+          if (err) {
+            response.status(500).send(err);
+          } else {
+            response.status(200).send(res);
+          }
+        });
+      } else if (this.echoCommand.canHandle(event)) {
+        this.echoCommand.handle(this.getEventFrom(request), (err, res) => {
+          if (err) {
+            response.status(500).send(err);
+          } else {
+            response.status(200).send(res);
+          });
       } else {
         this.handleUnknown(request, response);
       }
@@ -32,36 +44,6 @@ export class BotController {
 
   isValidTokenFor(request: Request) {
     return this.botToken == request.body.token;
-  }
-
-  isChallenge(request: Request) {
-    return this.challengeCommand.canHandle(this.getEventFrom(request));
-  }
-  
-  handleChallenge(request: Request, response: Response) {
-    this.challengeCommand.handle(this.getEventFrom(request), (err, res) => {
-      if (err) {
-        response.status(500).send(err);
-      } else {
-        response.status(200).send(res);
-      }
-    });
-  }
-
-  isAppMention(request: Request) {
-    return request.body.type == "event_callback" && request.body.event.type == "app_mention";
-  }
-
-  handleAppMention(request: Request, response: Response) {
-    if (this.echoCommand.canHandle(this.getEventFrom(request))) {
-      this.echoCommand.handle(this.getEventFrom(request), (err, res) => {
-        if (err) {
-          response.status(500).send(err);
-        } else {
-          response.status(200).send(res);
-        }
-      });
-    }
   }
 
   handleUnknown(request: Request, response: Response) {

@@ -11,7 +11,7 @@ export class EchoCommand {
   }
 
   canHandle(event: Event): boolean {
-    return this.echoRegexp.test(event.text);
+    return event.type == "event_callback" && event.eventType == "app_mention" && this.echoRegexp.test(event.text);
   }
 
   handle(event: Event, callback) {
