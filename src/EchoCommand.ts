@@ -1,9 +1,10 @@
 import { WebClient } from "@slack/client";
+import { Event } from "./Event";
+import { Command } from "./Command";
 
-export class EchoCommand {
+export class EchoCommand implements Command {
 
-  const echoRegexp = /echo (.*)/i;
-
+  echoRegexp = /echo (.*)/i;
   webClient: WebClient;
 
   constructor(webClient: WebClient) {

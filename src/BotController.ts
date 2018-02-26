@@ -18,9 +18,9 @@ export class BotController {
 
   process(request: Request, response: Response) {
     if (this.isValidTokenFor(request)) {
-      const event = this.getEventFrom(request);
+      const event: Event = this.getEventFrom(request);
       if (this.challengeCommand.canHandle(event)) {
-        this.challengeCommand.handle(this.getEventFrom(request), (err, res) => {
+        this.challengeCommand.handle(event, (err, res) => {
           if (err) {
             response.status(500).send(err);
           } else {
@@ -28,12 +28,13 @@ export class BotController {
           }
         });
       } else if (this.echoCommand.canHandle(event)) {
-        this.echoCommand.handle(this.getEventFrom(request), (err, res) => {
+        this.echoCommand.handle(event, (err, res) => {
           if (err) {
             response.status(500).send(err);
           } else {
             response.status(200).send(res);
-          });
+          }
+        });
       } else {
         this.handleUnknown(request, response);
       }
@@ -55,7 +56,7 @@ export class BotController {
   }
 
   getEventFrom(request: Request): Event {
-    var event =  { "type": request.body.type, "challenge": request.body.challenge };
+    var event: Event =  { "type": request.body.type, "challenge": request.body.challenge };
     if (request.body.event) {
       event.eventType = request.body.event.type;
       event.text = request.body.event.text;

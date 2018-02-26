@@ -1,11 +1,14 @@
-import { Request } from "./Request";
+import { Event } from "./Event";
+import { Command } from "./Command";
 
-export class ChallengeCommand {
+export class ChallengeCommand implements Command {
 
-  canHandle(request: Request): boolean {
-    return request.type == "url_verification";
+  canHandle(event: Event): boolean {
+    return event.type == "url_verification";
   }
 
-  handle(request: Request, callback) {
-    callback(null, { "challenge": request.challenge });
+  handle(event: Event, callback) {
+    callback(null, { "challenge": event.challenge });
   }
+
+}
