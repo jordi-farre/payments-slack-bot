@@ -1,15 +1,12 @@
 import { BotController } from "../src/BotController";
 const mockRes = require('jest-mock-express').response;
-import { WebClient } from "@slack/client";
 import { ChallengeCommand } from "../src/ChallengeCommand";
 jest.mock("../src/ChallengeCommand");
 const challengeCommand = new ChallengeCommand();
 import { EchoCommand } from "../src/EchoCommand"
 jest.mock("../src/EchoCommand");
 const echoCommand = new EchoCommand();
-const webClient = new WebClient("123456");
-webClient.chat.postMessage = jest.fn();
-const botController = new BotController("12345", webClient, challengeCommand, echoCommand);
+const botController = new BotController("12345", challengeCommand, echoCommand);
 const response = mockRes();
 
 it('should return the challenge received when the token is correct and the type is url_verification', ()=> {

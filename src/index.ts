@@ -14,7 +14,7 @@ const oauthToken = process.env.OAUTH_TOKEN;
 const webClient = new WebClient(oauthToken);
 const challengeCommand = new ChallengeCommand();
 const echoCommand = new EchoCommand(webClient);
-const botController = new BotController(token, webClient, challengeCommand, echoCommand);
+const botController = new BotController(token, challengeCommand, echoCommand);
 
 app.post('/', (request, response) => {
   botController.process(request, response);

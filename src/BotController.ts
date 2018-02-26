@@ -7,13 +7,11 @@ import { Event } from "./Event";
 export class BotController {
 
   botToken: string;
-  webClient: WebClient;
   challengeCommand: ChallengeCommand;
   echoCommand: EchoCommand;
 
-  constructor(botToken: string, webClient: WebClient, challengeCommand: ChallengeCommand, echoCommand: EchoCommand) {
+  constructor(botToken: string, challengeCommand: ChallengeCommand, echoCommand: EchoCommand) {
     this.botToken = botToken;
-    this.webClient = webClient;
     this.challengeCommand = challengeCommand;
     this.echoCommand = echoCommand;
   }
